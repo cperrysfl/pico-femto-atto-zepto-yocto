@@ -1,40 +1,336 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<link rel="stylesheet" href="dist/reset.css">
-		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css">
+	<title>reveal.js</title>
 
-		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="plugin/highlight/monokai.css">
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
+	<link rel="stylesheet" href="dist/reset.css">
+	<link rel="stylesheet" href="dist/reveal.css">
+	<link rel="stylesheet" href="dist/theme/moon.css">
+
+	<!-- Theme used for syntax highlighted code -->
+	<link rel="stylesheet" href="plugin/highlight/monokai.css">
+</head>
+<style>
+	.twocolumn {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		grid-gap: 10px;
+		text-align: left;
+	}
+</style>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section data-background-color="white">
+				<h2>Pico, femto, atto, zepto, <img
+						src="yocto/img/Yocto_Project_logo.png" width="250px"
+						style="vertical-align: bottom" />
+				</h2>
+				<p>Un aperçu des défis reliés à l'utilisation de Linux en
+					embarqué</p>
+				<img src="yocto/img/logo-linux-meetup-montreal.jpg"
+					width="500px" />
+			</section>
+			<section data-background-color="rgb(244 237 222)">
+				<img src="yocto/img/si_prefix.png" />
+				<small>source: <a
+						href="https://fr.wikipedia.org/wiki/Pr%C3%A9fixes_du_Syst%C3%A8me_international_d%27unit%C3%A9s">wikipedia</a></small>
+				<aside class="notes">
+					<ul>
+						<li>Préfixe du système métrique.</li>
+						<li>Le très petit, un système de fichier racine
+							minimal.</li>
+						<li>Deux autres préfixes ajoutés en 2022</li>
+					</ul>
+				</aside>
+			</section>
+			<section data-background-color="white">
+				<h2>Ingénierie Produit</h2>
+				<div class="twocolumn">
+					<div>
+						<img src="yocto/img/ts_pcb.jpg">
+					</div>
+					<ul>
+						<li>Linux embarqué du bootloader à l'application</li>
+						<li>Pilote logiciel pour du matériel sur mesure</li>
+						<li>Stack graphique, audio, WiFi, réseau</li>
+						<li>Temps réel</li>
+						<li>Stratégie de mise à jour</li>
+						<li>Secure boot</li>
+					</ul>
+				</div>
+				<aside class="notes">
+					Présenter l'équipe d'ingénierie produit de SFL.
+				</aside>
+			</section>
+			<section data-background-color="rgb(244 237 222)">
+				<img src="yocto/img/Yocto_Project_logo.png" width="50%" />
+				<blockquote>
+					<p>“It’s not an embedded Linux distribution, it creates a
+						custom one for you.”</p>
+				</blockquote>
+				<aside class="notes">
+					<ul>
+						<li>Tout est compilé à partir des sources.</li>
+						<li><code>poky</code> est la distro de référence.</li>
+						<li>Yocto permet de personaliser absolument tout, on
+							peut changer chaque choix fait par poky.</li>
+					</ul>
+				</aside>
+			</section>
+			<section data-auto-animate data-background-color="white">
+				<img src="yocto/img/yp-how-it-works-new-diagram.png"
+					width="100%" />
+				<small>source: <a
+						href="https://www.yoctoproject.org/wp-content/uploads/2017/07/yp-how-it-works-new-diagram.png">yoctoproject.org</a></small>
+				<aside class="notes">
+					<ul>
+						<li>En bleu pâle au milieu: <code>bitbake</code>,
+							l'ordonnanceur de tâches</li>
+						<li>En gris à gauche: les Métadonnées (recettes,
+							configuration, patchs)</li>
+						<li>En jaune en haut: code source des différents
+							composants
+							logiciel. Téléchargement pendant le build
+							(<code>do_fetch</code>)</li>
+						<li>En bleu foncé en bas à droite: le résultat de
+							compilation, les packages, les images en différents
+							formats, la toolchain.</li>
+					</ul>
+				</aside>
+			</section>
+			<section data-background-image="yocto/img/onion.jpg">
+				<h2>Layers</h2>
+				<p><code>meta-foo-bar</code></p>
+				<p><a
+						href="https://layers.openembedded.org/layerindex/branch/master/layers/">Index
+						des layers</a></p>
+				<aside class="notes">
+					<ul>
+						<li>Les Métadonnées (en gris à gauche sur la dernière
+							slide) sont organisées en "Layers" ou couche</li>
+						<li>L'organisation en couche est ce qui fait de Yocto un
+							écosystème ouvert plutôt qu'un système fermé</li>
+						<li>Les couches sont maintenus dans différents repos,
+							chaque joueur de l'écosystème maintient ses
+							couches.</li>
+						<li>Typiquement: <code>meta-*</code></li>
+						<li>Yocto maintient un index des layers</li>
+					</ul>
+				</aside>
+			</section>
+			<section data-background-color="white">
+				<h2>Layers Matériel</h2>
+				<div class="twocolumn">
+					<div>
+						<img src="yocto/img/customized_sbc.jpg">
+					</div>
+					<div>
+						<ul>
+							<li><code>poky</code> (ARM)</li>
+							<li><code>meta-freescale</code> (SoC)</li>
+							<li><code>meta-toradex-nxp</code> (SoM)</li>
+							<li><code>meta-my-custom-hardware</code> (Carte
+								mère)</li>
+						</ul>
+					</div>
+				</div>
+				<aside class="notes">
+					<ul>
+						<li>L'arbre est dans ses feuilles marilon, marilé...
+						</li>
+						<li>Le CPU est dans le SoC, le SoC est dans le SoM, ...
+						</li>
+						<li>Favorise la réutilisation du
+							code des metalayers.</li>
+						<li>Ce qu'on retrouve dans un layer BSP: configuration
+							pour le noyau et bootloader, firmwares, activation
+							d'options spécifiques au matériel dans certain
+							packages (GPU, encodage vidéo).</li>
+					</ul>
+				</aside>
+			</section>
+			<section data-background-color="white">
+				<h2>Layers logiciel</h2>
+				<ul>
+					<li><code>meta-qt5</code></li>
+					<li><code>meta-nodejs</code></li>
+					<li><code>meta-tensorflow</code></li>
+					<li><code>meta-doom</code></li>
+				</ul>
+				<aside class="notes">
+					<ul>
+						<li>Layers logiciel aussi maintenu dans des repos
+							séparés.
+							Favorise la composabilité.</li>
+						<li>Exemples: gros framework comme Qt5 ou Tensorflow, un
+							language interprété comme NodeJS ou Java, doom?!
+						</li>
+						<li>toutes les combinaisons ne sont toutefois pas
+							testées.</li>
+					</ul>
+				</aside>
+			</section>
+			<section data-background-color="white">
+				<h2>Metadata</h2>
+				<img src="yocto/img/metadata.svg" width="100%" />
+				<aside class="notes">
+					<ul>
+						<li>Un système yocto comprend 3 axes.</li>
+						<li>L'image, la machine et la distro.</li>
+						<li><em>Présenter chacun de ces 3 éléments.</em></li>
+						<li>Exemple: <code>poky</code>, qui est une distro
+							riche,
+							peut être utilisé pour compiler
+							<code>core-image-minimal</code> et
+							<code>poky-tiny</code> pourrait être utilisé pour
+							compiler <code>core-image-full</code>.
+						</li>
+						<li>En théorie orthogonal, en pratique, il y a du
+							couplage. Exemple une image <code>-weston</code> vas
+							avoir besoin d'une distro <code>-weston</code>.
+						</li>
+					</ul>
+				</aside>
+			</section>
+			<section data-background-color="white">
+				<h2>Utilisateurs</h2>
+				<img src="yocto/img/agl.png" />
+				<img src="yocto/img/seapath.png" /><br />
+				<img src="yocto/img/openbmc.png" />
+				<img src="yocto/img/webos.png" />
+				<aside class="notes">
+					<ul>
+						<li>AGL: automotive grade Linux</li>
+						<li>BMC: Baseboard Management Controller</li>
+						<li>LG webOS: TV intelligente</li>
+					</ul>
+					Seulement le pic de l'iceberg, étant open source, il est
+					impossible de connaître tous les utilisateurs.
+				</aside>
+			</section>
+			</section>
+			<section data-background-image="yocto/img/clones.jpg">
+				<h2>Reproductibilité</h2>
+				<aside class="notes">
+					<ul>
+						<li>La reproductibilité n'est pas propre à l'embarqué,
+							ça touche tous les sphères de l'informatique.</li>
+						<li>Les frameworks d'infrastructure en tant que code
+							comme <code>Ansible</code> ou <code>Puppet</code>
+							apportent des solutions aux problématiques de
+							reproductibilité dans le monde du serveur</li>
+						<li>Similairement, Yocto apporte une solution pour le
+							domaine de l'embarqué.</li>
+					</ul>
+				</aside>
+			</section>
+			<section data-markdown="yocto/reproducibility.md"
+				data-background-color="black">
+			</section>
+			<section
+				data-background-image="yocto/img/windows-update-close.webp">
+				<aside class="notes">Parlons mise à jour</aside>
+			</section>
+			<section data-markdown="yocto/updates.md"
+				data-background-color="rgb(10 72 183)" style="color:white">
+			</section>
+			</section>
+			<section data-markdown="yocto/finetuning.md"
+				data-background-image="yocto/img/wp11634009.jpg"
+				style="color:white">
+			</section>
+			<section data-background-image="yocto/img/ugly_good.jpg"
+				style="color:black">
+				<div class="twocolumn">
+					<div>
+						<h2 style="color:black" class="fragment">The Bad</h2>
+						<ul>
+							<li class="fragment" style="background-color:white">
+								Courbe d'apprentissage
+								abrupte</li>
+							<li class="fragment" style="background-color:white">
+								Mécanisme de personalisation
+								variés</li>
+							<li class="fragment" style="background-color:white">
+								Espace de stockage >50G</li>
+						</ul>
+					</div>
+					<div>
+						<h2 style="color:black" class="fragment">The Good</h2>
+						<ul>
+							<li class="fragment" style="background-color:white">
+								Adoption grandissante</li>
+							<li class="fragment" style="background-color:white">
+								ARM, x86, PPC, RISC-V, ...
+							</li>
+							<li class="fragment" style="background-color:white">
+								Agnostique des vendeurs</li>
+							<li class="fragment" style="background-color:white">
+								Conçu pour l'embarqué</li>
+							<li class="fragment" style="background-color:white">
+								Recompilation efficace</li>
+							<li class="fragment" style="background-color:white">
+								Suite de validation</li>
+							<li class="fragment" style="background-color:white">
+								Multiple configurations</li>
+						</ul>
+					</div>
+				</div>
+				<aside class="notes">
+					<ul>
+						<li>Courbe d'apprentissage: facile de faire un premier
+							build mais les premières modifications peuvent
+							prendre beaucoup de temps.</li>
+						<li>Mécanisme de personalisation variés: plusieurs
+							façons de faire la même chose se qui complexifie
+							l'apprentissage. Ex.: ajouter une tâche ou append la
+							précédente ou prepend la suivante? Les layers BSP
+							qui ont souvent de la logique custom.</li>
+						<li>Recompilation efficace: bitbake trace les paquets
+							dont la recette a changé et ne recompile qu'au
+							besoin.</li>
+						<li>Suite de validation: beaucoup de configuration
+							possible, Les mainteneurs de Yocto testent les
+							principales.</li>
+						<li>Multiple configuration: plusieurs types d'image
+							(production, dev, installation), plusieurs machines
+							(pénurie de semi-conducteur), plusieurs distros
+							(prod vs dev)</li>
+					</ul>
+				</aside>
+			</section>
+			<section data-background-color="rgb(244 237 222)">
+				<h2>Merci!</h2>
+				<img src="yocto/img/Savoir-faire_Linux_Logo.png" />
+				<h2>Question?</h2>
+			</section>
 		</div>
+	</div>
 
-		<script src="dist/reveal.js"></script>
-		<script src="plugin/notes/notes.js"></script>
-		<script src="plugin/markdown/markdown.js"></script>
-		<script src="plugin/highlight/highlight.js"></script>
-		<script>
-			// More info about initialization & config:
-			// - https://revealjs.com/initialization/
-			// - https://revealjs.com/config/
-			Reveal.initialize({
-				hash: true,
+	<script src="dist/reveal.js"></script>
+	<script src="plugin/notes/notes.js"></script>
+	<script src="plugin/markdown/markdown.js"></script>
+	<script src="plugin/highlight/highlight.js"></script>
+	<script>
+		// More info about initialization & config:
+		// - https://revealjs.com/initialization/
+		// - https://revealjs.com/config/
+		Reveal.initialize({
+			hash: true,
+			slideNumber: 'c/t',
+			width: 1100,
 
-				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
-			});
-		</script>
-	</body>
+			// Learn about plugins: https://revealjs.com/plugins/
+			plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+		});
+	</script>
+</body>
+
 </html>
